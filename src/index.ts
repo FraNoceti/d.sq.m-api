@@ -25,4 +25,10 @@ app.use(bodyParser.json());
 const port = process.env.PORT || 3000;
 app.listen(port as number, "0.0.0.0");
 
+app.get("/", (_req, res) =>
+  res.send(
+    "<div>Welcome to InvestConservation APIs! Contact <a href=`mailto:info@invetconservation.com`>info@invetconservation.com</a> for further details.</div>"
+  )
+);
+
 app.use("/v1", routerV1());
