@@ -100,7 +100,6 @@ export const validateRequest = (schema: Joi.AnySchema) => {
     next: express.NextFunction
   ) => {
     const { value, error } = schema.validate(req.body);
-    console.log(value, error);
     if (error) {
       return res
         .status(400)

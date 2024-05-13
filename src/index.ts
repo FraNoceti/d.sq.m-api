@@ -4,6 +4,7 @@ import cors from "cors";
 import compression from "compression";
 import routerV1 from "./router/v1";
 import bodyParser from "body-parser";
+import swaggerUi from "swagger-ui-express";
 
 const app = express();
 
@@ -22,7 +23,7 @@ app.use(bodyParser.json());
 //   console.log("server running at http://localhost:8080/");
 // });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 app.listen(port as number, "0.0.0.0");
 
 app.get("/", (_req, res) =>
@@ -30,5 +31,7 @@ app.get("/", (_req, res) =>
     "<div>Welcome to InvestConservation APIs! Contact <a href=`mailto:info@invetconservation.com`>info@invetconservation.com</a> for further details.</div>"
   )
 );
+
+// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use("/v1", routerV1());

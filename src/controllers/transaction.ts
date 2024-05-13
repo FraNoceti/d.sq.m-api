@@ -20,13 +20,14 @@ export const newTx = async (req: express.Request, res: express.Response) => {
       ).toUpperCase()}&to=USD`
     ).then((data) => data.json());
 
-    const tx = await client.prisma.transaction.create({
-      data: {
-        amountUSD: Number((conversion.rates.USD as number).toFixed(2)),
-        clientId: user.id,
-        customerEmail: email,
-      },
-    });
+    const { customerEmail, amountUSD, ...tx } =
+      await client.prisma.transaction.create({
+        data: {
+          amountUSD: Number((conversion.rates.USD as number).toFixed(2)),
+          clientId: user.id,
+          customerEmail: email,
+        },
+      });
 
     const sqmProtected = (
       (10000 / user.priceForHectare) *
@@ -55,12 +56,17 @@ export const newTx = async (req: express.Request, res: express.Response) => {
       body: JSON.stringify(params),
     });
 
-    const response = merge(tx, {
-      todayUsage,
-      daily_limit: user.dailyLimit,
-      protected_land: `${sqmProtected} sq.m.`,
-      remaining_hectares: remainingHectares.hectaresStock,
-    });
+    const response = merge(
+      {
+        protected_land: `${sqmProtected} sq.m.`,
+        amountUSD,
+        remaining_hectares: remainingHectares.hectaresStock,
+        todayUsage,
+        daily_limit: user.dailyLimit,
+      },
+      tx,
+      !!customerEmail && customerEmail
+    );
 
     if (email) {
       await client.resend.emails.send({
