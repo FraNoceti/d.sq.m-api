@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node --transpile-only ./src/start.ts",
+    "start": "ts-node --transpile-only ./src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon"
   },
