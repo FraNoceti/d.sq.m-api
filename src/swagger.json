@@ -1,0 +1,297 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+      "title": "InvestConservation - Conservation API",
+      "description": "This is the API documentation for the $/sq.m. based on the OpenAPI 3.0 specification.  You can find out more about\nInvestConservation at [https://investconservation.com/](https://investconservation.com/).",
+      "termsOfService": "https://investconservation.com/terms-conditions-marketplace",
+      "contact": {
+        "email": "apiteam@swagger.io"
+      },
+      "license": {
+        "name": "Proprietary License",
+        "url": "https://investconservation.com/terms-conditions-marketplace"
+      },
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "https://api.investconservation.com/v1/"
+      }
+    ],
+    "tags": [
+      {
+        "name": "Transaction",
+        "description": "preview or post a transaciton",
+        "externalDocs": {
+          "description": "Find out more",
+          "url": "https://investconservation.com/"
+        }
+      },
+      {
+        "name": "Usage",
+        "description": "Check your account daily usage"
+      }
+    ],
+    "paths": {
+      "/tx/new": {
+        "post": {
+          "tags": [
+            "Transaction"
+          ],
+          "summary": "Add a new transaction to the records",
+          "description": "Write a new transaction to the records associated to yuor account",
+          "operationId": "newTx",
+          "requestBody": {
+            "$ref": "#/components/requestBodies/Transaction"
+          },
+          "responses": {
+            "200": {
+              "description": "Successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                },
+                "application/xml": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid input"
+            },
+            "403": {
+              "description": "Forbidden access"
+            }
+          },
+          "security": [
+            {
+              "api_key": []
+            }
+          ]
+        }
+      },
+      "/tx/preview": {
+        "post": {
+          "tags": [
+            "Transaction"
+          ],
+          "summary": "Preview the value of your transaction",
+          "description": "Multiple status values can be provided with comma separated strings",
+          "operationId": "findPetsByStatus",
+          "requestBody": {
+            "$ref": "#/components/requestBodies/Transaction"
+          },
+          "responses": {
+            "200": {
+              "description": "successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                },
+                "application/xml": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid status value"
+            }
+          },
+          "security": [
+            {
+              "api_key": []
+            }
+          ]
+        }
+      },
+      "/usage": {
+        "get": {
+          "tags": [
+            "Usage"
+          ],
+          "summary": "Account usage current day",
+          "description": "Return the usage of your account for the current day",
+          "operationId": "checkUsage",
+          "responses": {
+            "200": {
+              "description": "successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "api_key": []
+            }
+          ]
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Transaction": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64",
+              "example": 10
+            },
+            "amountUSD": {
+              "type": "integer",
+              "format": "int64",
+              "example": 198772
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "client": {
+              "type": "string",
+              "description": "Order Status",
+              "example": "approved",
+              "enum": [
+                "placed",
+                "approved",
+                "delivered"
+              ]
+            },
+            "complete": {
+              "type": "boolean"
+            }
+          },
+          "xml": {
+            "name": "order"
+          }
+        },
+        "User": {
+          "type": "object",
+          "properties": {
+            "todayusage": {
+              "type": "integer",
+              "example": 5
+            },
+            "daily_limit": {
+              "type": "integer",
+              "example": 100
+            },
+            "remaining_hectares": {
+              "type": "integer",
+              "example": 89.678
+            }
+          },
+          "xml": {
+            "name": "user"
+          }
+        },
+        "ApiResponse": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "type": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
+          },
+          "xml": {
+            "name": "##default"
+          }
+        }
+      },
+      "requestBodies": {
+        "Transaction": {
+          "description": "Transaction to be recorded",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "totalAmount": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 2.5
+                  },
+                  "currency": {
+                    "type": "string",
+                    "example": "GBP"
+                  }
+                },
+                "xml": {
+                  "name": "txReq"
+                }
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "totalAmount": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 2.5
+                  },
+                  "currency": {
+                    "type": "string",
+                    "example": "GBP"
+                  }
+                },
+                "xml": {
+                  "name": "txReq"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "Usage": {
+          "description": "List of user object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "totalAmount": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 2.5
+                  },
+                  "currency": {
+                    "type": "string",
+                    "example": "GBP"
+                  }
+                },
+                "xml": {
+                  "name": "txReq"
+                }
+              }
+            }
+          }
+        }
+      },
+      "securitySchemes": {
+        "api_key": {
+          "type": "apiKey",
+          "name": "x-api-key",
+          "in": "header"
+        }
+      }
+    }
+  }
