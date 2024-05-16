@@ -41,6 +41,6 @@ var options = {
   customfavIcon: "./favicon.ico",
 };
 
-app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
 
 app.use("/v1", routerV1());
