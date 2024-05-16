@@ -27,11 +27,11 @@ app.use(bodyParser.json());
 const port = process.env.PORT || 8080;
 app.listen(port as number, "0.0.0.0");
 
-// app.get("/", (_req, res) =>
-//   res.send(
-//     "<div>Welcome to InvestConservation APIs! Contact <a href=`mailto:info@invetconservation.com`>info@invetconservation.com</a> for further details.</div>"
-//   )
-// );
+app.get("/", (_req, res) =>
+  res.send(
+    "<div>Welcome to InvestConservation APIs! Visit <a href=`https://api.investconservation.com/docs/`>api.investconservation.com/docs</a> for further details.</div>"
+  )
+);
 
 var options = {
   customCss: ".swagger-ui .topbar { display: none } body {padding: 0 10%;} ",
