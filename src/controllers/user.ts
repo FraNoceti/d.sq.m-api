@@ -47,12 +47,17 @@ export const newUser = async (req: express.Request, res: express.Response) => {
       }
     );
 
-    await client.resend.emails.send({
-      from: "InvestConservation <success@investconservation.com>",
-      to: [email],
-      subject: "Thank you from IC",
-      html: render(NewUser({ partnerName: name, apiKey: user.apiKey })),
-    });
+    // Send email asynchronously without blocking the response
+    client.resend.emails
+      .send({
+        from: "InvestConservation <success@investconservation.com>",
+        to: [email],
+        subject: "Thank you from IC",
+        html: render(NewUser({ partnerName: name, apiKey: user.apiKey })),
+      })
+      .catch((error) => {
+        console.error("Failed to send new user email:", error);
+      });
 
     return res.status(200).json({ user }).end();
   } catch (error) {

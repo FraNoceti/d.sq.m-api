@@ -68,15 +68,20 @@ export const newTx = async (req: express.Request, res: express.Response) => {
       !!customerEmail && customerEmail
     );
 
+    // Send email asynchronously without blocking the response
     if (email) {
-      await client.resend.emails.send({
-        from: "InvestConservation <thankyou@investconservation.com>",
-        to: [email],
-        subject: "Thank you from IC",
-        html: render(
-          ThankYouTx({ sqm: Number(sqmProtected), partnerName: user.name })
-        ),
-      });
+      client.resend.emails
+        .send({
+          from: "InvestConservation <thankyou@investconservation.com>",
+          to: [email],
+          subject: "Thank you from IC",
+          html: render(
+            ThankYouTx({ sqm: Number(sqmProtected), partnerName: user.name })
+          ),
+        })
+        .catch((error) => {
+          console.error("Failed to send transaction email:", error);
+        });
     }
 
     return res.status(200).json(response).end();

@@ -22,18 +22,19 @@ export const isAuthenticated = async (
           equals: apiKeyHeader as string,
         },
       },
-      include: {
-        usages: true,
-      },
     });
 
     if (!existingUser) return res.sendStatus(403);
 
     let today = new Date().toLocaleDateString();
 
-    const todayUsage = existingUser.usages.find(
-      (usage) => usage.date === today
-    );
+    // Query only today's usage instead of loading all usages
+    const todayUsage = await client.prisma.usage.findFirst({
+      where: {
+        clientId: existingUser.id,
+        date: today,
+      },
+    });
 
     if (todayUsage) {
       if (todayUsage.usageCount >= existingUser.dailyLimit)
@@ -43,7 +44,7 @@ export const isAuthenticated = async (
           id: todayUsage.id,
         },
         data: {
-          usageCount: (todayUsage.usageCount += 1),
+          usageCount: todayUsage.usageCount + 1,
         },
       });
     } else {
@@ -58,7 +59,7 @@ export const isAuthenticated = async (
 
     merge(req, {
       identity: existingUser,
-      today_usage: !!todayUsage ? (todayUsage.usageCount += 1) : 1,
+      today_usage: todayUsage ? todayUsage.usageCount + 1 : 1,
     });
 
     next();
