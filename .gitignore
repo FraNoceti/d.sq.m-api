@@ -3,3 +3,7 @@ node_modules
 .env
 /dist
 .vscode
+
+github-actions-key.json
+
+GCP-DEPLOYMENT.md
