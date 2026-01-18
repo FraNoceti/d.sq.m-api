@@ -7,3 +7,5 @@ node_modules
 github-actions-key.json
 
 GCP-DEPLOYMENT.md
+
+cloud-sql-proxy
