@@ -10,7 +10,7 @@ env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   SERVICE_NAME: dsqm-conservation-api
   REGION: us-central1
-  REGISTRY: us-central1-docker.pkg.dev
+  REGISTRY: gcr.io
 
 jobs:
   deploy:
