@@ -3,6 +3,7 @@ import client from "../client";
 import express from "express";
 import { Identity } from "types";
 import { render } from "@react-email/render";
+import { getUSDRate } from "../services/exchangeRate";
 
 import { ThankYouTx } from "../emails/transaction";
 
@@ -14,25 +15,20 @@ export const newTx = async (req: express.Request, res: express.Response) => {
 
     if (!currency || !totalAmount) return res.sendStatus(400);
 
-    const conversion = await fetch(
-      `https://api.frankfurter.app/latest?amount=${totalAmount}&from=${(
-        currency as string
-      ).toUpperCase()}&to=USD`
-    ).then((data) => data.json());
+    const amountInUSD = await getUSDRate(currency, totalAmount);
 
     const { customerEmail, amountUSD, ...tx } =
       await client.prisma.transaction.create({
         data: {
-          amountUSD: Number((conversion.rates.USD as number).toFixed(2)),
+          amountUSD: Number(amountInUSD.toFixed(2)),
           clientId: user.id,
           customerEmail: email,
         },
       });
 
-    const sqmProtected = (
-      (10000 / user.priceForHectare) *
-      conversion.rates.USD
-    ).toFixed(3);
+    const sqmProtected = ((10000 / user.priceForHectare) * amountInUSD).toFixed(
+      3
+    );
 
     const remainingHectares = await client.prisma.client.update({
       where: {
@@ -100,20 +96,15 @@ export const previewTx = async (
     const user: Identity = get(req, "identity");
     const todayUsage: number = get(req, "today_usage");
 
-    const conversion = await fetch(
-      `https://api.frankfurter.app/latest?amount=${totalAmount}&from=${(
-        currency as string
-      ).toUpperCase()}&to=USD`
-    ).then((data) => data.json());
+    const amountInUSD = await getUSDRate(currency, totalAmount);
 
-    const sqmProtected = (
-      (10000 / user.priceForHectare) *
-      conversion.rates.USD
-    ).toFixed(3);
+    const sqmProtected = ((10000 / user.priceForHectare) * amountInUSD).toFixed(
+      3
+    );
 
     const response = {
       protected_land: `${sqmProtected} sq.m.`,
-      amountUSD: Number((conversion.rates.USD as number).toFixed(2)),
+      amountUSD: Number(amountInUSD.toFixed(2)),
       todayUsage,
       daily_limit: user.dailyLimit,
     };

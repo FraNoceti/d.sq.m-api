@@ -6,6 +6,10 @@ import routerV1 from "./router/v1";
 import bodyParser from "body-parser";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./swagger.json";
+import { initExchangeRates } from "./services/exchangeRate";
+
+// Initialize exchange rates cache on startup
+initExchangeRates();
 
 const app = express();
 
