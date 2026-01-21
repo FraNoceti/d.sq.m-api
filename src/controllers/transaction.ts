@@ -44,12 +44,15 @@ export const newTx = async (req: express.Request, res: express.Response) => {
       amount: Number(sqmProtected) / 10000,
     };
 
-    await fetch("https://ic-ledger.vercel.app/api/sqm/updt-stock", {
+    // Fire-and-forget: don't block response
+    fetch("https://ic-ledger.vercel.app/api/sqm/updt-stock", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(params),
+    }).catch((error) => {
+      console.error("Failed to update ledger:", error);
     });
 
     const response = merge(

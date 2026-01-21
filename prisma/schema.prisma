@@ -24,6 +24,8 @@ model Client {
   dailyLimit      Int           @default(100)
   transactions    Transaction[]
   usages          Usage[]
+
+  @@index([apiKey])
 }
 
 model Usage {
@@ -32,6 +34,8 @@ model Usage {
   usageCount Int
   client     Client @relation(fields: [clientId], references: [id])
   clientId   Int
+
+  @@index([clientId, date])
 }
 
 model Transaction {
